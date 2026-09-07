@@ -2,7 +2,9 @@
 
 Clean-room reimplementation of the MedSnap architecture for Snap Spectacles, with a working Express backend, CV pipeline, Lens Studio client, and clinical dashboard.
 
-**Live demo:** [https://pulselens.vercel.app](https://pulselens.vercel.app)
+**Live demo:** [https://pulselens-clinical.vercel.app](https://pulselens-clinical.vercel.app)
+
+**Repository:** [https://github.com/atik-efaz5/PulseLens](https://github.com/atik-efaz5/PulseLens)
 
 **Not for clinical use.** Prototype / hackathon-quality demonstration.
 
@@ -99,8 +101,10 @@ See `docs/` for full forensic analysis, architecture, API inventory, compatibili
 
 | Service | URL |
 |---------|-----|
-| Dashboard (Vercel) | https://pulselens.vercel.app |
+| Dashboard (Vercel) | https://pulselens-clinical.vercel.app |
 | API (Vercel) | https://pulselens-api.vercel.app |
+
+> Note: `pulselens.vercel.app` is already registered to another Vercel project. This deployment uses `pulselens-clinical.vercel.app`.
 
 Dashboard proxies `/api/*` to the API via `API_URL` (set in Vercel project env).
 
