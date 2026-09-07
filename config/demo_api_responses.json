@@ -1,0 +1,15 @@
+{
+  "patient_loaded": {
+    "success": true,
+    "patient": { "name": "Sarah Chen", "id": "pt-sarah-chen" },
+    "audio_url": "demo://loaded"
+  },
+  "prescription_warfarin_interaction": {
+    "success": false,
+    "blocked": true,
+    "message": "Ibuprofen interacts with Warfarin (bleeding risk).",
+    "alternatives": [{ "medication": "Acetaminophen", "dosage": "500mg q6h" }]
+  },
+  "symptom_recorded": { "success": true, "message": "Symptom recorded." },
+  "training_complete": { "success": true, "bpm": 72, "assessment": "normal" }
+}

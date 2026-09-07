@@ -1,0 +1,20 @@
+{
+  "sarah_chen": {
+    "name": "Sarah Chen",
+    "age": 34,
+    "allergies": ["Penicillin"],
+    "medications": ["Warfarin 5mg", "Loratadine 10mg"]
+  },
+  "robert_martinez": {
+    "name": "Robert Martinez",
+    "age": 58,
+    "allergies": [],
+    "medications": ["Lisinopril 10mg"]
+  },
+  "emily_watson": {
+    "name": "Emily Watson",
+    "age": 27,
+    "allergies": ["Sulfa drugs"],
+    "medications": []
+  }
+}

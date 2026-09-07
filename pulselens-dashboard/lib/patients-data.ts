@@ -1,0 +1,144 @@
+export interface Patient {
+  id: string;
+  name: string;
+  age: number;
+  sex: string;
+  chief_complaint: string;
+  current_symptoms: string[];
+  vital_signs: {
+    bloodPressure: string;
+    heartRate: number;
+    o2Saturation?: number;
+    temperature?: number;
+  };
+  allergies: string[];
+  medications: { name: string; dosage: string }[];
+  diagnosis_history: string[];
+  isSynthetic?: boolean;
+}
+
+const SEED_PATIENTS: Patient[] = [
+  {
+    id: 'pt-sarah-chen',
+    name: 'Sarah Chen',
+    age: 34,
+    sex: 'Female',
+    chief_complaint: 'Chest tightness and cough',
+    current_symptoms: ['chest tightness', 'dry cough'],
+    vital_signs: { bloodPressure: '118/76', heartRate: 88, o2Saturation: 97, temperature: 101.5 },
+    allergies: ['Penicillin'],
+    medications: [{ name: 'Warfarin', dosage: '5mg daily' }, { name: 'Loratadine', dosage: '10mg daily' }],
+    diagnosis_history: ['Seasonal allergies', 'Atrial fibrillation (2023)'],
+  },
+  {
+    id: 'pt-robert-martinez',
+    name: 'Robert Martinez',
+    age: 58,
+    sex: 'Male',
+    chief_complaint: 'Elevated blood pressure',
+    current_symptoms: ['headache', 'dizziness'],
+    vital_signs: { bloodPressure: '152/94', heartRate: 78, o2Saturation: 98, temperature: 98.4 },
+    allergies: [],
+    medications: [{ name: 'Lisinopril', dosage: '10mg daily' }],
+    diagnosis_history: ['Hypertension'],
+  },
+  {
+    id: 'pt-emily-watson',
+    name: 'Emily Watson',
+    age: 27,
+    sex: 'Female',
+    chief_complaint: 'Sore throat',
+    current_symptoms: ['sore throat', 'fever'],
+    vital_signs: { bloodPressure: '110/70', heartRate: 92, o2Saturation: 99, temperature: 100.8 },
+    allergies: ['Sulfa drugs'],
+    medications: [],
+    diagnosis_history: ['Strep throat (2022)'],
+  },
+  {
+    id: 'pt-michael-okonkwo',
+    name: 'Michael Okonkwo',
+    age: 45,
+    sex: 'Male',
+    chief_complaint: 'Joint pain',
+    current_symptoms: ['knee pain', 'stiffness'],
+    vital_signs: { bloodPressure: '125/82', heartRate: 74, o2Saturation: 98, temperature: 98.2 },
+    allergies: [],
+    medications: [{ name: 'Metformin', dosage: '500mg twice daily' }],
+    diagnosis_history: ['Type 2 Diabetes'],
+  },
+  {
+    id: 'pt-linda-thompson',
+    name: 'Linda Thompson',
+    age: 62,
+    sex: 'Female',
+    chief_complaint: 'Acid reflux',
+    current_symptoms: ['heartburn', 'nausea'],
+    vital_signs: { bloodPressure: '130/85', heartRate: 80, o2Saturation: 97, temperature: 98.6 },
+    allergies: ['Aspirin'],
+    medications: [{ name: 'Omeprazole', dosage: '20mg daily' }],
+    diagnosis_history: ['GERD'],
+  },
+];
+
+const CONDITIONS = ['Hypertension', 'Diabetes', 'URI', 'GERD', 'Allergies', 'Arrhythmia', 'Joint pain'];
+
+function generateSyntheticPatient(i: number): Patient {
+  const id = `PT${String(i + 1).padStart(5, '0')}`;
+  const firstNames = ['Alex', 'Jordan', 'Morgan', 'Casey', 'Riley', 'Quinn', 'Avery', 'Blake'];
+  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore'];
+  const name = `${firstNames[i % firstNames.length]} ${lastNames[i % lastNames.length]}`;
+  const age = 22 + (i * 3) % 55;
+  const condition = CONDITIONS[i % CONDITIONS.length];
+  return {
+    id,
+    name,
+    age,
+    sex: i % 2 === 0 ? 'Female' : 'Male',
+    chief_complaint: condition,
+    current_symptoms: [condition.toLowerCase()],
+    vital_signs: {
+      bloodPressure: `${110 + (i % 30)}/${70 + (i % 20)}`,
+      heartRate: 65 + (i % 35),
+      o2Saturation: 96 + (i % 4),
+      temperature: 98 + (i % 3) * 0.3,
+    },
+    allergies: i % 7 === 0 ? ['Penicillin'] : [],
+    medications: i % 5 === 0 ? [{ name: 'Lisinopril', dosage: '10mg daily' }] : [],
+    diagnosis_history: [condition],
+    isSynthetic: true,
+  };
+}
+
+export const SYNTHETIC_PATIENTS: Patient[] = Array.from({ length: 100 }, (_, i) =>
+  generateSyntheticPatient(i)
+);
+
+export const ALL_PATIENTS: Patient[] = [...SEED_PATIENTS, ...SYNTHETIC_PATIENTS];
+
+export function searchPatients(query: string): Patient[] {
+  const q = query.toLowerCase().trim();
+  if (!q) return ALL_PATIENTS.slice(0, 20);
+  return ALL_PATIENTS.filter(
+    (p) =>
+      p.name.toLowerCase().includes(q) ||
+      p.id.toLowerCase().includes(q) ||
+      p.chief_complaint.toLowerCase().includes(q)
+  );
+}
+
+export function getPatientById(id: string): Patient | undefined {
+  return ALL_PATIENTS.find((p) => p.id === id);
+}
+
+import { apiPath } from './api';
+
+export async function fetchPatientFromApi(id: string): Promise<Patient | null> {
+  try {
+    const res = await fetch(apiPath(`/clinical/patient/${id}`));
+    if (!res.ok) return getPatientById(id) || null;
+    const data = await res.json();
+    return data.patient as Patient;
+  } catch {
+    return getPatientById(id) || null;
+  }
+}
